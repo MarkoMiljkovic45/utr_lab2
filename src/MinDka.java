@@ -51,9 +51,7 @@ public final class MinDka {
         dkaMachine.getStates().addAll(states);
         dkaMachine.getAcceptableStates().addAll(acceptableStates);
 
-        System.out.println(new Pair(1,2).equals(new Pair(2,1)));
-
-        //dkaMachine.minimize();
+        dkaMachine.minimize();
         dkaMachine.print();
     }
 

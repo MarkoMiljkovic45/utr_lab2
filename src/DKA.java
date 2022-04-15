@@ -34,7 +34,7 @@ public final class DKA {
     }
 
     private void removeUnreachableStates() {
-        states.forEach(state -> state.setVisited(false)); //Unvisit all states
+        states.forEach(state -> state.setVisited(false));
         Set<State> reachableStates= new TreeSet<>();
 
         Stack<State> stack = new Stack<>();
@@ -60,8 +60,7 @@ public final class DKA {
     }
 
     private void removeEquivalentStates() {
-        StateEquivalenceTable stateEquivalenceTable = new StateEquivalenceTable(states);
-        stateEquivalenceTable.test();
+        StateEquivalenceTable stateEquivalenceTable = new StateEquivalenceTable(states, symbols, acceptableStates);
         Set<Pair<State, State>> equivalentStates = stateEquivalenceTable.getEquivalentStates();
         for (Pair<State,State> pair: equivalentStates) {
             OrderedPair<State> orderedPair = new OrderedPair<>(pair);
