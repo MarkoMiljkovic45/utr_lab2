@@ -1,5 +1,4 @@
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public final class DKA {
 
@@ -35,18 +34,61 @@ public final class DKA {
     }
 
     private void removeUnreachableStates() {
-        //TODO
+        states.forEach(state -> state.setVisited(false)); //Unvisit all states
+        Set<State> reachableStates= new TreeSet<>();
+
+        Stack<State> stack = new Stack<>();
+        stack.push(initialState);
+        while(!stack.empty()) {
+            State state = stack.pop();
+            if (!state.isVisited()) {
+                reachableStates.add(state);
+                state.getTransitions().forEach(transition -> {
+                    if (!transition.getNewState().isVisited())
+                        stack.push(transition.getNewState());
+                });
+            }
+        }
+
+        states.clear();
+        states.addAll(reachableStates);
+
+        for (State state: acceptableStates) {
+            if (!states.contains(state))
+                acceptableStates.remove(state);
+        }
     }
 
     private void removeEquivalentStates() {
-        //TODO
+        StateEquivalenceTable stateEquivalenceTable = new StateEquivalenceTable(states);
+        stateEquivalenceTable.test();
+        Set<Pair<State, State>> equivalentStates = stateEquivalenceTable.getEquivalentStates();
+        for (Pair<State,State> pair: equivalentStates) {
+            OrderedPair<State> orderedPair = new OrderedPair<>(pair);
+            State.replaceStates(states, orderedPair.getSecond(), orderedPair.getFirst());
+        }
     }
 
     public void minimize() {
-        //TODO
+        removeUnreachableStates();
+        removeEquivalentStates();
     }
 
     public void print() {
-        //TODO
+        String strStates = states.toString();
+        strStates = strStates.substring(1, strStates.length() - 1);
+
+        String strSymbols = symbols.toString();
+        strSymbols = strSymbols.substring(1, strSymbols.length() - 1);
+
+        String strAcceptableStates = acceptableStates.toString();
+        strAcceptableStates = strAcceptableStates.substring(1, strAcceptableStates.length() - 1);
+
+        System.out.println(strStates);
+        System.out.println(strSymbols);
+        System.out.println(strAcceptableStates);
+        System.out.println(initialState);
+        for (State state: states)
+            state.getTransitions().forEach(System.out::println);
     }
 }

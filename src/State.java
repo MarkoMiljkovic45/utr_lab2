@@ -1,3 +1,4 @@
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -32,6 +33,37 @@ public final class State implements Comparable<State> {
 
     public void setVisited(boolean visited) {
         this.visited = visited;
+    }
+
+    private void absorb(State state) {
+        for (Transition transition: state.getTransitions()) {
+            transitions.add(new Transition(this, transition.getSymbol(), transition.getNewState()));
+        }
+        for (Transition transition: transitions) {
+            if (transition.getNewState().equals(state)) {
+                transitions.add(new Transition(transition.getOldState(), transition.getSymbol(), this));
+                transitions.remove(transition);
+            }
+        }
+    }
+
+    public static void replaceStates(Collection<State> states, State oldState, State newState) {
+        if (!states.contains(newState)) return;
+        newState.absorb(oldState);
+        if (!states.remove(oldState)) return;
+        for(State state: states) {
+            for (Transition transition: state.getTransitions()) {
+                if (transition.getNewState().equals(oldState)) {
+                    state.getTransitions().add(new Transition(transition.getOldState(), transition.getSymbol(), newState));
+                    state.getTransitions().remove(transition);
+                }
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Override
