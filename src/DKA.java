@@ -43,6 +43,7 @@ public final class DKA {
             State state = stack.pop();
             if (!state.isVisited()) {
                 reachableStates.add(state);
+                state.setVisited(true);
                 state.getTransitions().forEach(transition -> {
                     if (!transition.getNewState().isVisited())
                         stack.push(transition.getNewState());
@@ -50,12 +51,14 @@ public final class DKA {
             }
         }
 
-        states.clear();
-        states.addAll(reachableStates);
+        Set<State> unreachableStates = new TreeSet<>();
+        for (State state: states)
+            if (!reachableStates.contains(state))
+                unreachableStates.add(state);
 
-        for (State state: acceptableStates) {
-            if (!states.contains(state))
-                acceptableStates.remove(state);
+        for (State state: unreachableStates) {
+            states.remove(state);
+            acceptableStates.remove(state);
         }
     }
 
@@ -65,6 +68,8 @@ public final class DKA {
         for (Pair<State,State> pair: equivalentStates) {
             OrderedPair<State> orderedPair = new OrderedPair<>(pair);
             State.replaceStates(states, orderedPair.getSecond(), orderedPair.getFirst());
+            states.remove(pair.getSecond());
+            acceptableStates.remove(pair.getSecond());
         }
     }
 

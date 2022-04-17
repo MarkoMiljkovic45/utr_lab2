@@ -2,9 +2,9 @@ import java.util.Objects;
 
 public class Transition implements Comparable<Transition> {
 
-    private final State oldState;
-    private final String symbol;
-    private final State newState;
+    private State oldState;
+    private String symbol;
+    private State newState;
 
     public Transition(State oldState, String symbol, State newState) {
         this.oldState = oldState;
@@ -22,6 +22,18 @@ public class Transition implements Comparable<Transition> {
 
     public State getNewState() {
         return newState;
+    }
+
+    public void setOldState(State oldState) {
+        this.oldState = oldState;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public void setNewState(State newState) {
+        this.newState = newState;
     }
 
     @Override

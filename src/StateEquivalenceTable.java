@@ -28,6 +28,19 @@ public final class StateEquivalenceTable {
                 }
             }
         }
+        for (int i = 0; i < states.size(); i++)
+            equivalenceTable[i][i] = true;
+    }
+
+    private void resolveDependencies(State firstState, State secondState) {
+        OrderedPair<State> statePair = new OrderedPair<>(firstState, secondState);
+        if (stateDependencies.get(statePair) == null) return;
+
+        for (OrderedPair<State> dependantStates: stateDependencies.get(statePair)) {
+            int i = states.indexOf(dependantStates.getFirst());
+            int j = states.indexOf(dependantStates.getSecond());
+            equivalenceTable[i][j] = false;
+        }
     }
 
     private void testState(State firstState, State secondState) {
@@ -41,8 +54,13 @@ public final class StateEquivalenceTable {
             int newFirstStateIndex = states.indexOf(newFirstState);
             int newSecondStateIndex = states.indexOf(newSecondState);
 
-            if (!equivalenceTable[newFirstStateIndex][newSecondStateIndex])
+            if (firstStateIndex < 0 || secondStateIndex < 0 || newFirstStateIndex < 0 || newSecondStateIndex < 0)
+                return;
+
+            if (!equivalenceTable[newFirstStateIndex][newSecondStateIndex]) {
                 equivalenceTable[firstStateIndex][secondStateIndex] = false;
+                resolveDependencies(firstState, secondState);
+            }
             else {
                 OrderedPair<State> keyPair = new OrderedPair<>(newFirstState, newSecondState);
                 OrderedPair<State> valuePair = new OrderedPair<>(firstState, secondState);
@@ -57,10 +75,6 @@ public final class StateEquivalenceTable {
         }
     }
 
-    private void resolveDependencies() {
-        //TODO
-    }
-
     private void testTable() {
         for(int i = 0; i < states.size() - 1; i++) {
             State iState = states.get(i);
@@ -69,8 +83,6 @@ public final class StateEquivalenceTable {
                 testState(iState, jState);
             }
         }
-
-        resolveDependencies();
     }
 
     public Set<Pair<State, State>> getEquivalentStates() {

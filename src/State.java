@@ -61,8 +61,7 @@ public final class State implements Comparable<State> {
         for(State state: states) {
             for (Transition transition: state.getTransitions()) {
                 if (transition.getNewState().equals(oldState)) {
-                    state.getTransitions().add(new Transition(transition.getOldState(), transition.getSymbol(), newState));
-                    state.getTransitions().remove(transition);
+                    transition.setNewState(newState);
                 }
             }
         }

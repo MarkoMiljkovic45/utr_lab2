@@ -1,7 +1,8 @@
 public class OrderedPair<T extends Comparable<T>> extends Pair<T, T> {
 
     public OrderedPair(T first, T second) {
-        if (first.compareTo(second) < 0) {
+        super(first, second);
+        if (first.compareTo(second) > 0) {
             setFirst(second);
             setSecond(first);
         }
