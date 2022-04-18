@@ -81,13 +81,13 @@ public final class DKA {
 
     public void print() {
         String strStates = states.toString();
-        strStates = strStates.substring(1, strStates.length() - 1);
+        strStates = strStates.substring(1, strStates.length() - 1).replaceAll(" ", "");
 
         String strSymbols = symbols.toString();
-        strSymbols = strSymbols.substring(1, strSymbols.length() - 1);
+        strSymbols = strSymbols.substring(1, strSymbols.length() - 1).replaceAll(" ", "");
 
         String strAcceptableStates = acceptableStates.toString();
-        strAcceptableStates = strAcceptableStates.substring(1, strAcceptableStates.length() - 1);
+        strAcceptableStates = strAcceptableStates.substring(1, strAcceptableStates.length() - 1).replaceAll(" ", "");
 
         System.out.println(strStates);
         System.out.println(strSymbols);
