@@ -43,13 +43,9 @@ public final class State implements Comparable<State> {
     }
 
     private void absorb(State state) {
-        for (Transition transition: state.getTransitions()) {
-            transitions.add(new Transition(this, transition.getSymbol(), transition.getNewState()));
-        }
         for (Transition transition: transitions) {
             if (transition.getNewState().equals(state)) {
-                transitions.add(new Transition(transition.getOldState(), transition.getSymbol(), this));
-                transitions.remove(transition);
+                transition.setNewState(this);
             }
         }
     }

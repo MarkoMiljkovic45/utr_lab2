@@ -35,12 +35,19 @@ public final class StateEquivalenceTable {
     private void resolveDependencies(State firstState, State secondState) {
         OrderedPair<State> statePair = new OrderedPair<>(firstState, secondState);
         if (stateDependencies.get(statePair) == null) return;
+        if (stateDependencies.get(statePair).isEmpty()) return;
+
+        List<OrderedPair<State>> resolvedDependencies = new ArrayList<>();
 
         for (OrderedPair<State> dependantStates: stateDependencies.get(statePair)) {
             int i = states.indexOf(dependantStates.getFirst());
             int j = states.indexOf(dependantStates.getSecond());
             equivalenceTable[i][j] = false;
+            resolvedDependencies.add(dependantStates);
+            resolveDependencies(dependantStates.getFirst(), dependantStates.getSecond());
         }
+
+        resolvedDependencies.forEach(stateDependencies.get(statePair)::remove);
     }
 
     private void testState(State firstState, State secondState) {
@@ -51,8 +58,16 @@ public final class StateEquivalenceTable {
             State newFirstState = firstState.getNext(symbol);
             State newSecondState = secondState.getNext(symbol);
 
+            if (newFirstState == newSecondState) continue;
+
             int newFirstStateIndex = states.indexOf(newFirstState);
             int newSecondStateIndex = states.indexOf(newSecondState);
+
+            if (newFirstStateIndex > newSecondStateIndex) {
+                int tmp = newFirstStateIndex;
+                newFirstStateIndex = newSecondStateIndex;
+                newSecondStateIndex = tmp;
+            }
 
             if (firstStateIndex < 0 || secondStateIndex < 0 || newFirstStateIndex < 0 || newSecondStateIndex < 0)
                 return;

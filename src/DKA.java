@@ -70,6 +70,7 @@ public final class DKA {
             State.replaceStates(states, orderedPair.getSecond(), orderedPair.getFirst());
             states.remove(pair.getSecond());
             acceptableStates.remove(pair.getSecond());
+            if (initialState == orderedPair.getSecond()) initialState = orderedPair.getFirst();
         }
     }
 

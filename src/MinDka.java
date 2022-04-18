@@ -24,11 +24,15 @@ public final class MinDka {
         dkaMachine.getSymbols().addAll(Arrays.asList(token.split(",")));
 
         //3. Acceptable states
-        //TODO Slucaj kad nema prihvatljibog stanja
         token = sc.nextLine();
         ArrayList<String> acceptableStateNames = new ArrayList<>(Arrays.asList(token.split(",")));
-        for (String acceptableStateName: acceptableStateNames)
-            acceptableStates.add(states.get(states.indexOf(new State(acceptableStateName))));
+        for (String acceptableStateName: acceptableStateNames) {
+            State acceptableState = new State(acceptableStateName);
+            if (states.contains(acceptableState))
+                acceptableStates.add(states.get(states.indexOf(acceptableState)));
+            else
+                acceptableStates.add(acceptableState);
+        }
 
         //4. Initial state
         String initialStateName = sc.nextLine();
